@@ -5,7 +5,6 @@ public class Pathfinding extends PApplet{
 
     HashMap<Vector2D, Node> gridNodes = new HashMap<>();
     HashMap<Vector2D, Node> activeSet = new HashMap<>();
-    HashMap<Vector2D, Node> path = new HashMap<>();
     Vector2D coors[][];
     int xNodes, yNodes;
     Node currentNode, startNode, endNode;
@@ -45,16 +44,18 @@ public class Pathfinding extends PApplet{
 
                 if(gridNodes.size() == xNodes * yNodes){
                     if (gridNodes.containsKey(coors[i][j])) {
-                        if (gridNodes.get(coors[i][j]).isStart()) {
+                        if (gridNodes.get(coors[i][j]).isInPath()) {
+                            fill(150, 0, 150);
+                        } else if (gridNodes.get(coors[i][j]).isStart()) {
                             fill(0, 0, 255);
                         } else if (gridNodes.get(coors[i][j]).isEnd()) {
                             fill(255, 0, 0);
-                        } else if (gridNodes.get(coors[i][j]).isActive()) {
-                            fill(0, 255, 0);
-                        } else if (gridNodes.get(coors[i][j]).isWall()) {
-                            fill(50);
                         } else if (gridNodes.get(coors[i][j]).isChecked()) {
                             fill(0, 100, 100);
+                        } else if (gridNodes.get(coors[i][j]).isWall()) {
+                            fill(50);
+                        } else if (gridNodes.get(coors[i][j]).isActive()) {
+                            fill(0, 255, 0);
                         } else if (gridNodes.get(coors[i][j]).isCurrNode()) {
                             fill(100, 100, 0);
                         }
@@ -169,16 +170,40 @@ public class Pathfinding extends PApplet{
         if (key == 'r') {
             activeSet.clear();
             currentNode = null;
+
+            for (Node node: gridNodes.values()) {
+                node.setWall(false);
+                node.setActive(false);
+                node.setChecked(false);
+                node.setStart(false);
+                node.setEnd(false);
+                node.setInPath(false);
+            }
+        }
+
+        if (key == 'g') {
+            double randNum;
+
+            for (Node node: gridNodes.values()) {
+                randNum = Math.random();
+
+                if (randNum < 0.5) {
+                    node.setWall(true);
+                } else {
+                    node.setWall(false);
+                }
+                System.out.println(randNum);
+            }
+
+            key = 'n';
         }
     }
 
     public void aStar(Node currNode){
-        boolean yes = activeSet.containsValue(endNode);
-        System.out.println(yes);
-        if (!yes) {
+        if (!currNode.equals(endNode)) {
             currentNode.setCurrNode(false);
             int minFCost, minHCost, nextMinFCost, nextMinHCost;
-            Node nextNode = currNode;
+            Node nextNode;
 
             if (activeSet.isEmpty()) {
                 activeSet.put(currNode.getNodePosition(), currNode);
@@ -192,8 +217,9 @@ public class Pathfinding extends PApplet{
                 nodeToCheck.setfCost(nodeToCheck.getgCost() + nodeToCheck.gethCost());
             }
 
-            minFCost = currNode.getfCost();
-            minHCost = currNode.gethCost();
+            minFCost = activeSet.get(activeSet.keySet().toArray()[0]).getfCost();
+            minHCost = activeSet.get(activeSet.keySet().toArray()[0]).gethCost();
+            nextNode = activeSet.get(activeSet.keySet().toArray()[0]);
 
             currNode.setChecked(true);
             activeSet.remove(currNode.getNodePosition());
@@ -215,34 +241,10 @@ public class Pathfinding extends PApplet{
                 }
             }
 
-            if (!activeSet.containsValue(nextNode)) {
-                nextMinFCost = activeSet.get(activeSet.keySet().toArray()[0]).getfCost();
-                nextMinHCost = activeSet.get(activeSet.keySet().toArray()[0]).gethCost();
-                nextNode = activeSet.get(activeSet.keySet().toArray()[0]);
-
-                for (Node node : activeSet.values()) {
-                    if (node.getfCost() < nextMinFCost) {
-                        minFCost = node.getfCost();
-                        nextNode = node;
-                        nextMinHCost = node.gethCost();
-                    }
-                }
-
-                for (Node node : activeSet.values()) {
-                    if (node.getfCost() == nextMinFCost) {
-                        if (node.gethCost() < nextMinHCost) {
-                            minHCost = node.gethCost();
-                            minFCost = node.getfCost();
-                            nextMinHCost = minHCost;
-                            nextNode = node;
-                        }
-                    }
-                }
-            }
             currentNode = nextNode;
             currentNode.setCurrNode(true);
         } else {
-            path.put(endNode.getNodePosition(), endNode);
+            fillPath(endNode);
         }
     }
 
@@ -252,38 +254,46 @@ public class Pathfinding extends PApplet{
                 if (currNode.getNodePosition().getyPos() + currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 } else if (currNode.getNodePosition().getyPos() - currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 } else if (currNode.getNodePosition().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 }
             } else if (currNode.getNodePosition().getxPos() - currNode.getNodeSize().getxPos() == neighborPos.getxPos()) {
                 if (currNode.getNodePosition().getyPos() + currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 } else if (currNode.getNodePosition().getyPos() - currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 } else if (currNode.getNodePosition().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 }
             } else if (currNode.getNodePosition().getxPos() == neighborPos.getxPos()) {
                 if (currNode.getNodePosition().getyPos() + currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 } else if (currNode.getNodePosition().getyPos() - currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
+                        gridNodes.get(neighborPos).setParent(currNode);
                     }
                 }
             }
@@ -291,11 +301,19 @@ public class Pathfinding extends PApplet{
 
         for (Node node : gridNodes.values()) {
             if (activeSet.containsValue(node)) {
-                node.setParent(currNode);
                 node.setActive(true);
             } else {
                 node.setActive(false);
             }
+        }
+    }
+
+    public void fillPath(Node currNode) {
+        if (currNode.isStart()) {
+            currNode.setInPath(true);
+        } else {
+            currNode.setInPath(true);
+            fillPath(currNode.getParent());
         }
     }
 }
