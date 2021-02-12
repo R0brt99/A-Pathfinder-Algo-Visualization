@@ -18,8 +18,6 @@ Tap 'g' to generate a random maze
 
 # Todo:
 
-Fix bug where path goes through corners of walls.
-
 Fix bug where algorithm can't find the end node depsite touching it.
 
 Fix bug where path hits wall and expands outward instead of continuing to find a path

@@ -187,7 +187,7 @@ public class Pathfinding extends PApplet{
             for (Node node: gridNodes.values()) {
                 randNum = Math.random();
 
-                if (randNum < 0.5) {
+                if (randNum < 0.4) {
                     node.setWall(true);
                 } else {
                     node.setWall(false);
@@ -250,34 +250,14 @@ public class Pathfinding extends PApplet{
     public void addToActive(Node currNode){
         for (Vector2D neighborPos : gridNodes.keySet()){
             if (currNode.getNodePosition().getxPos() + currNode.getNodeSize().getxPos() == neighborPos.getxPos()) {
-                if (currNode.getNodePosition().getyPos() + currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
-                    if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
-                        activeSet.put(neighborPos, gridNodes.get(neighborPos));
-                        gridNodes.get(neighborPos).setParent(currNode);
-                    }
-                } else if (currNode.getNodePosition().getyPos() - currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
-                    if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
-                        activeSet.put(neighborPos, gridNodes.get(neighborPos));
-                        gridNodes.get(neighborPos).setParent(currNode);
-                    }
-                } else if (currNode.getNodePosition().getyPos() == neighborPos.getyPos()) {
+                 if (currNode.getNodePosition().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
                         gridNodes.get(neighborPos).setParent(currNode);
                     }
                 }
             } else if (currNode.getNodePosition().getxPos() - currNode.getNodeSize().getxPos() == neighborPos.getxPos()) {
-                if (currNode.getNodePosition().getyPos() + currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
-                    if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
-                        activeSet.put(neighborPos, gridNodes.get(neighborPos));
-                        gridNodes.get(neighborPos).setParent(currNode);
-                    }
-                } else if (currNode.getNodePosition().getyPos() - currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
-                    if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
-                        activeSet.put(neighborPos, gridNodes.get(neighborPos));
-                        gridNodes.get(neighborPos).setParent(currNode);
-                    }
-                } else if (currNode.getNodePosition().getyPos() == neighborPos.getyPos()) {
+                if (currNode.getNodePosition().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
                         gridNodes.get(neighborPos).setParent(currNode);
