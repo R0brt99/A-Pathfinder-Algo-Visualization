@@ -2,7 +2,7 @@ An A* pathfinding visualizer made with Java Processing and HashMaps
 
 ----------------------------------------------------------------------------------
 
-ToDo:
+# ToDo:
 
 Fix bug where path goes through corners of walls.
 
