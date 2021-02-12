@@ -46,18 +46,18 @@ public class Pathfinding extends PApplet{
                     if (gridNodes.containsKey(coors[i][j])) {
                         if (gridNodes.get(coors[i][j]).isInPath()) {
                             fill(150, 0, 150);
+                        } else if (gridNodes.get(coors[i][j]).isCurrNode()) {
+                            fill(100, 100, 0);
                         } else if (gridNodes.get(coors[i][j]).isStart()) {
                             fill(0, 0, 255);
                         } else if (gridNodes.get(coors[i][j]).isEnd()) {
                             fill(255, 0, 0);
-                        } else if (gridNodes.get(coors[i][j]).isChecked()) {
+                        } else if (gridNodes.get(coors[i][j]).isActive()) {
                             fill(0, 100, 100);
                         } else if (gridNodes.get(coors[i][j]).isWall()) {
                             fill(50);
-                        } else if (gridNodes.get(coors[i][j]).isActive()) {
+                        } else if (gridNodes.get(coors[i][j]).isChecked()) {
                             fill(0, 255, 0);
-                        } else if (gridNodes.get(coors[i][j]).isCurrNode()) {
-                            fill(100, 100, 0);
                         }
                     }
                 }
@@ -178,6 +178,7 @@ public class Pathfinding extends PApplet{
                 node.setStart(false);
                 node.setEnd(false);
                 node.setInPath(false);
+                node.setCurrNode(false);
             }
         }
 
@@ -200,21 +201,17 @@ public class Pathfinding extends PApplet{
 
     public void aStar(Node currNode){
         if (!currNode.equals(endNode)) {
-            currentNode.setCurrNode(false);
             int minFCost, minHCost;
             Node nextNode;
 
             if (activeSet.isEmpty()) {
                 activeSet.put(currNode.getNodePosition(), currNode);
+                currNode.setgCost(Math.abs(startNode.getNodePosition().getxPos() - currNode.getNodePosition().getxPos()) + Math.abs(startNode.getNodePosition().getyPos() - currNode.getNodePosition().getyPos()));
+                currNode.sethCost(Math.abs(endNode.getNodePosition().getxPos() - currNode.getNodePosition().getxPos()) + Math.abs(endNode.getNodePosition().getyPos() - currNode.getNodePosition().getyPos()));
+                currNode.setfCost(currNode.getgCost() + currNode.gethCost());
             }
 
             addToActive(currNode);
-
-            for (Node nodeToCheck : activeSet.values()) {
-                nodeToCheck.setgCost(Math.abs(startNode.getNodePosition().getxPos() - nodeToCheck.getNodePosition().getxPos()) + Math.abs(startNode.getNodePosition().getyPos() - nodeToCheck.getNodePosition().getyPos()));
-                nodeToCheck.sethCost(Math.abs(endNode.getNodePosition().getxPos() - nodeToCheck.getNodePosition().getxPos()) + Math.abs(endNode.getNodePosition().getyPos() - nodeToCheck.getNodePosition().getyPos()));
-                nodeToCheck.setfCost(nodeToCheck.getgCost() + nodeToCheck.gethCost());
-            }
 
             minFCost = activeSet.get(activeSet.keySet().toArray()[0]).getfCost();
             minHCost = activeSet.get(activeSet.keySet().toArray()[0]).gethCost();
@@ -239,7 +236,7 @@ public class Pathfinding extends PApplet{
                     }
                 }
             }
-
+            currentNode.setCurrNode(false);
             currentNode = nextNode;
             currentNode.setCurrNode(true);
         } else {
@@ -254,6 +251,9 @@ public class Pathfinding extends PApplet{
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
                         gridNodes.get(neighborPos).setParent(currNode);
+                        gridNodes.get(neighborPos).setgCost(Math.abs(startNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(startNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).sethCost(Math.abs(endNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(endNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).setfCost(gridNodes.get(neighborPos).getgCost() + gridNodes.get(neighborPos).gethCost());
                     }
                 }
             } else if (currNode.getNodePosition().getxPos() - currNode.getNodeSize().getxPos() == neighborPos.getxPos()) {
@@ -261,6 +261,9 @@ public class Pathfinding extends PApplet{
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
                         gridNodes.get(neighborPos).setParent(currNode);
+                        gridNodes.get(neighborPos).setgCost(Math.abs(startNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(startNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).sethCost(Math.abs(endNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(endNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).setfCost(gridNodes.get(neighborPos).getgCost() + gridNodes.get(neighborPos).gethCost());
                     }
                 }
             } else if (currNode.getNodePosition().getxPos() == neighborPos.getxPos()) {
@@ -268,11 +271,17 @@ public class Pathfinding extends PApplet{
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
                         gridNodes.get(neighborPos).setParent(currNode);
+                        gridNodes.get(neighborPos).setgCost(Math.abs(startNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(startNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).sethCost(Math.abs(endNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(endNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).setfCost(gridNodes.get(neighborPos).getgCost() + gridNodes.get(neighborPos).gethCost());
                     }
                 } else if (currNode.getNodePosition().getyPos() - currNode.getNodeSize().getyPos() == neighborPos.getyPos()) {
                     if (!gridNodes.get(neighborPos).isWall() && !gridNodes.get(neighborPos).isChecked()) {
                         activeSet.put(neighborPos, gridNodes.get(neighborPos));
                         gridNodes.get(neighborPos).setParent(currNode);
+                        gridNodes.get(neighborPos).setgCost(Math.abs(startNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(startNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).sethCost(Math.abs(endNode.getNodePosition().getxPos() - gridNodes.get(neighborPos).getNodePosition().getxPos()) + Math.abs(endNode.getNodePosition().getyPos() - gridNodes.get(neighborPos).getNodePosition().getyPos()));
+                        gridNodes.get(neighborPos).setfCost(gridNodes.get(neighborPos).getgCost() + gridNodes.get(neighborPos).gethCost());
                     }
                 }
             }
