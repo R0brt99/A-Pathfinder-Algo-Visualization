@@ -192,7 +192,6 @@ public class Pathfinding extends PApplet{
                 } else {
                     node.setWall(false);
                 }
-                System.out.println(randNum);
             }
 
             key = 'n';
@@ -202,7 +201,7 @@ public class Pathfinding extends PApplet{
     public void aStar(Node currNode){
         if (!currNode.equals(endNode)) {
             currentNode.setCurrNode(false);
-            int minFCost, minHCost, nextMinFCost, nextMinHCost;
+            int minFCost, minHCost;
             Node nextNode;
 
             if (activeSet.isEmpty()) {
