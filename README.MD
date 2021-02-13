@@ -2,6 +2,16 @@ An A* pathfinding visualizer made with Java Processing and HashMaps
 
 ----------------------------------------------------------------------------------
 
+# Installation / How to Run
+
+1. Download Repository
+2. Navigate to the base directory
+3. Execute the Pathfinding.jar (java -jar Pathfinding.jar)
+
+**Supports Java 13 and up**
+
+The Only Files Required to run this are Pathfinding.jar and the lib folder
+
 # Controls:
 
 Tap 's' and click a tile to place the start tile
