@@ -6,7 +6,7 @@ An A* pathfinding visualizer made with Java Processing and HashMaps
 
 1. Download Repository
 2. Navigate to the base directory
-3. Execute the Pathfinding.jar (java -jar Pathfinding.jar)
+3. Execute the Pathfinding.jar
 
 **Supports Java 13 and up**
 
