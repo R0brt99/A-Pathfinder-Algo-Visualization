@@ -16,8 +16,8 @@ Tap 'BACKSPACE' to run the pathfinding algorithm
 
 Tap 'g' to generate a random maze
 
+Tab 'c' and click a tile to print it's coordinates to the console ((0, 0) is in the top left and coordinates increase going right and down)
+
 # Todo:
 
-Fix bug where algorithm can't find the end node depsite touching it.
-
-Fix bug where path hits wall and expands outward instead of continuing to find a path
+Fix Node-Parenting Processe to define the path (Currently is adding unecessary nodes) 

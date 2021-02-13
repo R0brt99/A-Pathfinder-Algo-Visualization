@@ -76,23 +76,9 @@ public class Pathfinding extends PApplet{
         if (mousePressed) {
             if (key == 's') {
                 for (Node mouseNode : gridNodes.values()) {
-                    if (mouseX > mouseNode.getNodePosition().getxPos() - (mouseNode.getNodeSize().getxPos() / 2)) {
-                        if (mouseX < mouseNode.getNodePosition().getxPos() + mouseNode.getNodeSize().getxPos() / 2) {
-                            if (mouseY > mouseNode.getNodePosition().getyPos() - mouseNode.getNodeSize().getyPos() / 2) {
-                                if (mouseY < mouseNode.getNodePosition().getyPos() + mouseNode.getNodeSize().getyPos() / 2) {
-                                    if (gridNodes.containsKey(mouseNode.getNodePosition())) {
-                                        gridNodes.get(mouseNode.getNodePosition()).setStart(true);
-                                        startNode = mouseNode;
-                                    }
-                                } else {
-                                    gridNodes.get(mouseNode.getNodePosition()).setStart(false);
-                                }
-                            } else {
-                                gridNodes.get(mouseNode.getNodePosition()).setStart(false);
-                            }
-                        } else {
-                            gridNodes.get(mouseNode.getNodePosition()).setStart(false);
-                        }
+                    if (isMouseOver(mouseNode)) {
+                        gridNodes.get(mouseNode.getNodePosition()).setStart(true);
+                        startNode = mouseNode;
                     } else {
                         gridNodes.get(mouseNode.getNodePosition()).setStart(false);
                     }
@@ -101,23 +87,9 @@ public class Pathfinding extends PApplet{
 
             if (key == 'e') {
                 for (Node mouseNode : gridNodes.values()) {
-                    if (mouseX > mouseNode.getNodePosition().getxPos() - (mouseNode.getNodeSize().getxPos() / 2)) {
-                        if (mouseX < mouseNode.getNodePosition().getxPos() + mouseNode.getNodeSize().getxPos() / 2) {
-                            if (mouseY > mouseNode.getNodePosition().getyPos() - mouseNode.getNodeSize().getyPos() / 2) {
-                                if (mouseY < mouseNode.getNodePosition().getyPos() + mouseNode.getNodeSize().getyPos() / 2) {
-                                    if (gridNodes.containsKey(mouseNode.getNodePosition())) {
-                                        gridNodes.get(mouseNode.getNodePosition()).setEnd(true);
-                                        endNode = mouseNode;
-                                    }
-                                } else {
-                                    gridNodes.get(mouseNode.getNodePosition()).setEnd(false);
-                                }
-                            } else {
-                                gridNodes.get(mouseNode.getNodePosition()).setEnd(false);
-                            }
-                        } else {
-                            gridNodes.get(mouseNode.getNodePosition()).setEnd(false);
-                        }
+                    if (isMouseOver(mouseNode)) {
+                        gridNodes.get(mouseNode.getNodePosition()).setEnd(true);
+                        endNode = mouseNode;
                     } else {
                         gridNodes.get(mouseNode.getNodePosition()).setEnd(false);
                     }
@@ -126,38 +98,21 @@ public class Pathfinding extends PApplet{
 
             if (key == 'b') {
                 for (Node mouseNode : gridNodes.values()) {
-                    if (mouseX > mouseNode.getNodePosition().getxPos() - (mouseNode.getNodeSize().getxPos() / 2)) {
-                        if (mouseX < mouseNode.getNodePosition().getxPos() + mouseNode.getNodeSize().getxPos() / 2) {
-                            if (mouseY > mouseNode.getNodePosition().getyPos() - mouseNode.getNodeSize().getyPos() / 2) {
-                                if (mouseY < mouseNode.getNodePosition().getyPos() + mouseNode.getNodeSize().getyPos() / 2) {
-                                    if (gridNodes.containsKey(mouseNode.getNodePosition())) {
-                                        gridNodes.get(mouseNode.getNodePosition()).setWall(true);
-                                        endNode = mouseNode;
-                                    }
-                                }
-                            }
-                        }
+                    if (isMouseOver(mouseNode)) {
+                        gridNodes.get(mouseNode.getNodePosition()).setWall(true);
                     }
                 }
             }
 
             if (key == 'u') {
                 for (Node mouseNode : gridNodes.values()) {
-                    if (mouseX > mouseNode.getNodePosition().getxPos() - (mouseNode.getNodeSize().getxPos() / 2)) {
-                        if (mouseX < mouseNode.getNodePosition().getxPos() + mouseNode.getNodeSize().getxPos() / 2) {
-                            if (mouseY > mouseNode.getNodePosition().getyPos() - mouseNode.getNodeSize().getyPos() / 2) {
-                                if (mouseY < mouseNode.getNodePosition().getyPos() + mouseNode.getNodeSize().getyPos() / 2) {
-                                    if (gridNodes.containsKey(mouseNode.getNodePosition())) {
-                                        gridNodes.get(mouseNode.getNodePosition()).setWall(false);
-                                        endNode = mouseNode;
-                                    }
-                                }
-                            }
-                        }
+                    if (isMouseOver(mouseNode)) {
+                       mouseNode.setWall(false);
                     }
                 }
             }
         }
+
         if (keyCode == BACKSPACE) {
             if (startNode != null && endNode != null) {
                 if (currentNode == null) {
@@ -197,6 +152,14 @@ public class Pathfinding extends PApplet{
 
             key = 'n';
         }
+
+        if (key == 'c') {
+            for (Node mouseNode : gridNodes.values()) {
+                if (isMouseOver(mouseNode) && mousePressed) {
+                    System.out.println("[" + mouseNode.getNodePosition().getxPos() + ", " + mouseNode.getNodePosition().getyPos() + "]");
+                }
+            }
+        } 
     }
 
     public void aStar(Node currNode){
@@ -303,5 +266,23 @@ public class Pathfinding extends PApplet{
             currNode.setInPath(true);
             fillPath(currNode.getParent());
         }
+    }
+
+    public boolean isMouseOver(Node mouseNode) {
+        
+        if (mouseX > mouseNode.getNodePosition().getxPos() - (mouseNode.getNodeSize().getxPos() / 2)) {
+            if (mouseX < mouseNode.getNodePosition().getxPos() + mouseNode.getNodeSize().getxPos() / 2) {
+                if (mouseY > mouseNode.getNodePosition().getyPos() - mouseNode.getNodeSize().getyPos() / 2) {
+                    if (mouseY < mouseNode.getNodePosition().getyPos() + mouseNode.getNodeSize().getyPos() / 2) {
+                        if (gridNodes.containsKey(mouseNode.getNodePosition())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        
+        }
+
+        return false;
     }
 }
