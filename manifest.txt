@@ -1,2 +1,2 @@
 Main-Class: Pathfinding
-Class-Path: lib/core.jar
+Class-Path: ./lib/core.jar
